@@ -6,13 +6,15 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.example.quizappcourse.chooser.QuizChooserFragment
+import com.example.quizappcourse.chooser.QuizItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 /* Main activity of application
 * */
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -32,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         object : FragmentPagerAdapter(supportFragmentManager){
             override fun getItem(position: Int) = when(position) {
                 FEED_ID -> Fragment() //News List Fragment
-                CHOOSER_ID -> Fragment() //Quiz chooser fragment
+                CHOOSER_ID -> QuizChooserFragment() //Quiz chooser fragment
                 PROFILE_ID -> Fragment() // profile fragment
                 else -> {
                         Log.wtf("Fragment out of bonds", "How come?")
@@ -86,5 +88,9 @@ class MainActivity : AppCompatActivity() {
         const val FEED_ID = 0
         const val CHOOSER_ID = 1
         const val  PROFILE_ID = 2
+    }
+
+    override fun onStartQuizSelected(quiz: QuizItem, string: String) {
+        Log.i("MAIN ACTIVITY", "Main activity on start quiz selected ")
     }
 }
