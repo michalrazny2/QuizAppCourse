@@ -52,7 +52,6 @@ class QuizChooserFragment : Fragment() {
     private fun setUpRecyclerView(){
         //todo doimplementowac
         quest_item_list.layoutManager = GridLayoutManager(context, COLUMN_COUNT) //TODO: poprawic , blad wynika z tego ze korzystam z innych wersji
-        // mam androidx... zamiast android supprot v4
         quest_item_list.adapter = QuizChooserRecyclerViewAdapter(quizzesMap, onStartQuizListener)
 
     }
