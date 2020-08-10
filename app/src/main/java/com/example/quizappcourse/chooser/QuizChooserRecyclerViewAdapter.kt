@@ -42,10 +42,10 @@ class QuizChooserRecyclerViewAdapter(private val quizzesMap: HashMap<String,Quiz
             onStartQuizListener.onStartQuizSelected(holder.nItem,getSingleLineQuizTitle(sorted,position))
         }
     }
-    private fun  getSingleLineQuizTitle(sorted: List<QuizItem>,position:Int)
-            = "${sorted[position].lang.getString()} \n ${sorted[position].level.getString()}"
+    private fun getSingleLineQuizTitle(sorted: List<QuizItem>,position:Int)
+            = "${sorted[position].lang.getString()}  ${sorted[position].level.getString()}"
 
-    private fun  getDoubleLineQuizTitle(sorted: List<QuizItem>,position:Int)
+    private fun getDoubleLineQuizTitle(sorted: List<QuizItem>,position:Int)
         = "${sorted[position].lang.getString()} \n ${sorted[position].level.getString()}"
 
 }

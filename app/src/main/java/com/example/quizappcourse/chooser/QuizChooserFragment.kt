@@ -15,7 +15,7 @@ class QuizChooserFragment : Fragment() {
 
     // todo: komunikacja do zrobienia
 
-    private lateinit var onStartQuizListener: QuizChooserFragment.OnStartQuizListener
+    private lateinit var onStartQuizListener: OnStartQuizListener
     private val quizzesMap: HashMap<String,QuizItem> = HashMap()
 
     override fun onAttach(context: Context) {
@@ -38,14 +38,13 @@ class QuizChooserFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setUpRecyclerView()
-        //todo: doimplementowac
         setCommunication()
     }
 
     private fun setCommunication() {
         quizzesMap.apply{
-            put("1", QuizItem())
-            put("12", QuizItem())
+            put("1", QuizItem(lang=LangEnum.JAVA))
+            put("12", QuizItem(level=LevelEnum.AVARAGE))
         }
     }
 

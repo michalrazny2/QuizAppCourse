@@ -24,10 +24,12 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class QuizActivity : AppCompatActivity(){
+    //TODO: do poprawy ten blad ktory powoduje ze wyswietlaja sie jakies losowe napisy w okolicach quizchooserfragmentu/quizitemu
+
     // nowa aktywnosc- bo otwieramy nowe okno
 
     //potrzebujemy kolekcje do obsługi pytan:
-    private val questionList by lazy{ intent.extras?.get(QUIZ_SET) as ArrayList<QuestionItem>}
+    private val questionList by lazy{ intent.extras!!.get(QUIZ_SET) as ArrayList<QuestionItem>}
     private val quizIterator by lazy{questionList.iterator()}
     val succesArray: BooleanArray by lazy{BooleanArray(questionList.size)}
 
@@ -40,12 +42,12 @@ class QuizActivity : AppCompatActivity(){
     var prepareNext = getPrepareNextTimer()
 
     private val quizTitle by lazy{
-        intent.extras?.get(TITLE) as String
+        intent.extras!!.get(TITLE) as String
     }
     private val quiz by lazy{
         // quiz jest inicjalizowany leniwie- co oznacza ze ten blok kodu wykonuje sie
         // przy pierwszym wywolaniu val quiz
-        intent.extras?.get(QUIZ) as QuizItem
+        intent.extras!!.get(QUIZ) as QuizItem
 
     }
 
@@ -55,6 +57,7 @@ class QuizActivity : AppCompatActivity(){
 
         quizLogo.setImageResource(quiz.lang.image)
         levelImageView.setImageResource(quiz.level.image)
+
         nextQuestion()
     }
 
@@ -81,21 +84,21 @@ class QuizActivity : AppCompatActivity(){
         when(currentPositive){
             1->{
                 ans_a.niceSetText(currentQuestionItem.positive)
-                ans_a.setOnClickListener{onChoiceListener(true)}
+                ans_a.setOnClickListener(onChoiceListener(true))
                 ans_b.niceSetText(currentQuestionItem.false1)
                 ans_c.niceSetText(currentQuestionItem.false2)
             }
             2->{
                 ans_a.niceSetText(currentQuestionItem.false1)
                 ans_b.niceSetText(currentQuestionItem.positive)
-                ans_b.setOnClickListener{onChoiceListener(true)}
+                ans_b.setOnClickListener(onChoiceListener(true))
                 ans_c.niceSetText(currentQuestionItem.false2)
             }
             3->{
                 ans_a.niceSetText(currentQuestionItem.false1)
                 ans_b.niceSetText(currentQuestionItem.false2)
                 ans_c.niceSetText(currentQuestionItem.positive)
-                ans_c.setOnClickListener{onChoiceListener(true)}
+                ans_c.setOnClickListener(onChoiceListener(true))
             }
         }
     }
@@ -152,7 +155,7 @@ class QuizActivity : AppCompatActivity(){
         }
     }
 
-    private var countDownRemain: Long = 40000
+    private var countDownRemain: Long = COUNTDOWNREMAIN
 
     private fun getCountDownTimer(): CountDownTimer {
         return object : CountDownTimer(countDownRemain, 100){
@@ -174,12 +177,12 @@ class QuizActivity : AppCompatActivity(){
     }
 
     private fun resetNextTimer() {
-        countDownRemain = 40000
-        prepareNextRemain = 2000
+        countDownRemain = COUNTDOWNREMAIN
+        prepareNextRemain = PREPARENEXTREMAIN
         prepareNext = getPrepareNextTimer()
     }
 
-    private var prepareNextRemain: Long = 2000
+    private var prepareNextRemain: Long = PREPARENEXTREMAIN
 
     private fun getPrepareNextTimer(): CountDownTimer {
         return object: CountDownTimer(prepareNextRemain, 10){
@@ -200,8 +203,8 @@ class QuizActivity : AppCompatActivity(){
     }
 
     private fun resetCountDownTimer() {
-        countDownRemain = 40000
-        prepareNextRemain = 2000
+        countDownRemain = COUNTDOWNREMAIN
+        prepareNextRemain = PREPARENEXTREMAIN
         countDown = getCountDownTimer()
     }
 
@@ -215,11 +218,11 @@ class QuizActivity : AppCompatActivity(){
     //po wznowieniu appki ustawiamy timery od nowa zeby appka sie nie wywalala
     override fun onResume(){
         super.onResume()
-        if (!countDownRemain.equals(40000)){
+        if (!countDownRemain.equals(COUNTDOWNREMAIN)){
             countDown = getCountDownTimer()
             countDown.start()
         }
-        if (!prepareNextRemain.equals(2000)){
+        if (!prepareNextRemain.equals(PREPARENEXTREMAIN)){
             prepareNext = getPrepareNextTimer()
             prepareNext.start()
         }
@@ -239,6 +242,9 @@ class QuizActivity : AppCompatActivity(){
         const val QUIZ_NAME = "QUIZNAME"
         const val SUCCESS_SUMMARY = "SUCCESS_SUMMMARY"
         const val POINTS = "POINTS"
+
+        const val COUNTDOWNREMAIN = 40000L
+        const val PREPARENEXTREMAIN = 2000L
     }
 
 }
