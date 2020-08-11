@@ -231,7 +231,7 @@ class QuizActivity : AppCompatActivity(){
     private fun returnResultFromQuiz() {
         val intent = Intent().apply(){
             putExtra(QUIZ_NAME, quizTitle)
-            putExtra(SUCCESS_SUMMARY, "Poprawne ${succesArray.count({it})*(quiz.level.ordinal+1)}/5")
+            putExtra(SUCCESS_SUMMARY, "Poprawne ${succesArray.count({it})}/5")
             putExtra(POINTS, succesArray.count({it}) * (quiz.level.ordinal+1) *39)
         }
         setResult(Activity.RESULT_OK)

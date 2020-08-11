@@ -13,6 +13,7 @@ import com.example.quizappcourse.chooser.QuizChooserFragment
 import com.example.quizappcourse.chooser.QuizItem
 import com.example.quizappcourse.quiz.QuestionItem
 import com.example.quizappcourse.quiz.QuizActivity
+import com.example.quizappcourse.summary.QuizSummaryActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_quizitem_list.*
@@ -99,6 +100,10 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
         const val QUIZ = "quiz"
         const val TITLE = "title"
         const val QUIZ_ACT_REQ_CODE = 100
+        const val QUIZ_SUMMARY_CODE = 101
+
+        const val USER_URL = "USER_URL"
+        const val USER_NAME = "USER_NAME"
     }
 
     private fun getChooserListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ CHOOSER_ID) as QuizChooserFragment)
@@ -123,10 +128,22 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
         if(resultCode == Activity.RESULT_OK){
             when{
                 (resultCode == QUIZ_ACT_REQ_CODE)->{
-                    //todo navigate to summary
+                    navigateToSummaryActivity(data)
                 }
             }
         }
+    }
+
+    private fun navigateToSummaryActivity(data: Intent?) {
+        var intent = Intent(this, QuizSummaryActivity::class.java).apply{
+            if(QApp.fUser != null){
+                // todo: zasilenie uzytkownikiem
+                data?.putExtra(USER_NAME, "Uzytkownik")
+                data?.putExtra(USER_URL, "htpps://wwww.costam.pl")
+            }
+            putExtras(data!!.extras)
+        }
+        startActivityForResult(intent, QUIZ_SUMMARY_CODE)
     }
 
     private fun navigateQuiz(quizSet: ArrayList<QuestionItem>, title:String, quiz: QuizItem) {

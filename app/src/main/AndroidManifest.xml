@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".quiz.QuizActivity" />
+        <activity android:name=".summary.QuizSummaryActivity" />
 
         <!-- TODO: adding all activities on way  -->
     </application>
