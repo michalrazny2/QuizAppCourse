@@ -234,7 +234,7 @@ class QuizActivity : AppCompatActivity(){
             putExtra(SUCCESS_SUMMARY, "Poprawne ${succesArray.count({it})}/5")
             putExtra(POINTS, succesArray.count({it}) * (quiz.level.ordinal+1) *39)
         }
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, intent)
         finish()
     }
 

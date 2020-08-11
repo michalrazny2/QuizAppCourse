@@ -19,8 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".quiz.QuizActivity" />
-        <activity android:name=".summary.QuizSummaryActivity" />
+        <activity android:name=".quiz.QuizActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".summary.QuizSummaryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/customDialogTheme"/>
 
         <!-- TODO: adding all activities on way  -->
     </application>

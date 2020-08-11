@@ -1,15 +1,22 @@
 package com.example.quizappcourse.summary
 
+import android.app.Activity
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.quizappcourse.MainActivity.Companion.USER_NAME
 import com.example.quizappcourse.MainActivity.Companion.USER_URL
+import com.example.quizappcourse.QApp
 import com.example.quizappcourse.R
+import com.example.quizappcourse.news.NewsItem
 import com.example.quizappcourse.quiz.QuizActivity.Companion.POINTS
 import com.example.quizappcourse.quiz.QuizActivity.Companion.QUIZ_NAME
 import com.example.quizappcourse.quiz.QuizActivity.Companion.SUCCESS_SUMMARY
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_newsitem.*
 import kotlinx.android.synthetic.main.fragment_newsitem.quizTitle
 import kotlinx.android.synthetic.main.fragment_quizitem.*
@@ -22,7 +29,7 @@ class QuizSummaryActivity : AppCompatActivity() {
     // intent extras
     private val quiz_name by lazy{intent.extras?.get(QUIZ_NAME) as String}
     private val success_summary by lazy{intent.extras?.get(SUCCESS_SUMMARY) as String}
-    private val points by lazy{intent.extras?.get(POINTS) as Int}
+    private val pointed by lazy{intent.extras?.get(POINTS) as Int}
     private val user_name by lazy{intent.extras?.get(USER_NAME) as String}
     private val user_url by lazy{intent.extras?.get(USER_URL) as String}
 
@@ -35,7 +42,7 @@ class QuizSummaryActivity : AppCompatActivity() {
     private fun setUpViews() {
         title_caption.text = success_summary
         quizTitle.text = quiz_name
-        pointsText.text = points.toString()
+        pointsText.text = pointed.toString()
         respects.text = 1.toString()
         time.text = "00m"
 
@@ -65,16 +72,57 @@ class QuizSummaryActivity : AppCompatActivity() {
 
     // comment
     private fun setAddComment() {
-        TODO("Not yet implemented")
+        add_comment.visibility = View.VISIBLE
+        comment.visibility = View.GONE
+        add_comment.setOnClickListener{
+            v -> showEditComment()
+        }
+    }
+
+    private fun showEditComment() {
+        add_comment.visibility = View.GONE
+        edit_comment.visibility = View.VISIBLE
     }
 
     // score sharing
     private fun setUpOkButton() {
-        TODO("Not yet implemented")
+        if(FirebaseAuth.getInstance().currentUser != null){
+            ok.setOnClickListener{
+                v -> goToPublish()
+            }
+            }else{
+            ok.text = QApp.res.getString(R.string.not_logged_news)
+            ok.setOnClickListener{ logIn() }
+        }
+    }
+
+    private fun goToPublish() {
+        val intent = Intent().apply{
+            putExtra(NEW_FEED, NewsItem().apply{
+                comment = edit_comment.text.toString()
+                points = pointed
+                quiz = quiz_name
+                timeMilis = System.currentTimeMillis()
+            })
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun logIn() {
+        //todo: bazowa aktywnosc logowania
+        goToPublish()
     }
 
     private fun setUpCloseButton() {
-        TODO("Not yet implemented")
+        close_btn.setOnClickListener{
+            v -> setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    companion object{
+        const val NEW_FEED = "newFeed"
     }
 
 }

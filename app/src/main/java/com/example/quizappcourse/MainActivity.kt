@@ -127,8 +127,11 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
         super.onActivityResult(requestCode, resultCode, data)
         if(resultCode == Activity.RESULT_OK){
             when{
-                (resultCode == QUIZ_ACT_REQ_CODE)->{
+                (requestCode == QUIZ_ACT_REQ_CODE)->{
                     navigateToSummaryActivity(data)
+                }
+                (requestCode == QUIZ_SUMMARY_CODE)->{
+                    //todo wyslanie danych na serwer
                 }
             }
         }
