@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.quizappcourse.chooser.QuizChooserFragment
 import com.example.quizappcourse.chooser.QuizItem
+import com.example.quizappcourse.news.NewsListFragment
+import com.example.quizappcourse.profile.UserItem
 import com.example.quizappcourse.quiz.QuestionItem
 import com.example.quizappcourse.quiz.QuizActivity
 import com.example.quizappcourse.summary.QuizSummaryActivity
@@ -21,7 +23,7 @@ import kotlinx.android.synthetic.main.fragment_quizitem_list.*
 /* Main activity of application
 * */
 
-class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListener {
+class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListener, NewsListFragment.OnNewsIteractionListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
     private fun getFragmentPagerAdapter() =
         object : FragmentPagerAdapter(supportFragmentManager){
             override fun getItem(position: Int) = when(position) {
-                FEED_ID -> Fragment() //News List Fragment
+                FEED_ID -> NewsListFragment() //News List Fragment
                 CHOOSER_ID -> QuizChooserFragment() //Quiz chooser fragment
                 PROFILE_ID -> Fragment() // profile fragment
                 else -> {
@@ -144,7 +146,7 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
                 data?.putExtra(USER_NAME, "Uzytkownik")
                 data?.putExtra(USER_URL, "htpps://wwww.costam.pl")
             }
-            putExtras(data!!.extras)
+            data?.extras?.let { putExtras(it) }
         }
         startActivityForResult(intent, QUIZ_SUMMARY_CODE)
     }
@@ -156,5 +158,14 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
             putExtra(QUIZ, quiz)
         }
         startActivityForResult(intent, QUIZ_ACT_REQ_CODE)
+    }
+
+    // Funkcje z interface z NewsListFragmentu
+    override fun onUserSelected(user: UserItem, image: View) {
+        //todo przejsc do other user activity
+    }
+
+    override fun onLikeSelected(feedId: String, diff: Int) {
+        //todo feed
     }
 }
