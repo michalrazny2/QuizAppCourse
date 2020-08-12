@@ -29,7 +29,7 @@ class OtherProfileActivity : AppCompatActivity(), NewsListFragment.OnNewsIteract
     }
 
     private fun setUpToolbar() {
-        toolbar.navigationIcon = R.drawable.ic_close as Drawable //todo to do zmiany pewnie
+        toolbar.setNavigationIcon(R.drawable.ic_close)  //todo to do zmiany pewnie
         toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 

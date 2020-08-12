@@ -1,52 +1,45 @@
 {
   "project_info": {
-    "project_number": "1074922807704",
-    "firebase_url": "https://quizandroidcgw.firebaseio.com",
-    "project_id": "quizandroidcgw",
-    "storage_bucket": "quizandroidcgw.appspot.com"
+    "project_number": "889225496720",
+    "firebase_url": "https://quizappcourse.firebaseio.com",
+    "project_id": "quizappcourse",
+    "storage_bucket": "quizappcourse.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1074922807704:android:026d01d139e9d9c7",
+        "mobilesdk_app_id": "1:889225496720:android:1a7d6a565550e99b68f015",
         "android_client_info": {
           "package_name": "com.example.quizappcourse"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1074922807704-51h0nc0cnffs9silsu5voqrs4956e3gj.apps.googleusercontent.com",
+          "client_id": "889225496720-hevmffllc3u2b32o7bv4hk893jr4uqi3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "pl.cgwisdom.quizzandrcgw",
-            "certificate_hash": "639200bf7552f9622af43233be02f729a49a100b"
+            "package_name": "com.example.quizappcourse",
+            "certificate_hash": "4c7e5409c6b647f1a0b4c6482216495896133425"
           }
         },
         {
-          "client_id": "1074922807704-i1786fbr6gl9am2g5162v05hj3pr55l7.apps.googleusercontent.com",
+          "client_id": "889225496720-kfq72846eh9md0ocmdgh3n8nsmkockda.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyACV3xvTbU7g1-Om4ELAEuozBafWCekB3Q"
+          "current_key": "AIzaSyBG5dK_r6NN5HtKAlREduIJiLV3Koca2s4"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1074922807704-i1786fbr6gl9am2g5162v05hj3pr55l7.apps.googleusercontent.com",
+              "client_id": "889225496720-kfq72846eh9md0ocmdgh3n8nsmkockda.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
