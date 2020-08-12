@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.quizappcourse.chooser.QuizChooserFragment
 import com.example.quizappcourse.chooser.QuizItem
 import com.example.quizappcourse.news.NewsListFragment
+import com.example.quizappcourse.profile.OtherProfileActivity
+import com.example.quizappcourse.profile.ProfileFragment
 import com.example.quizappcourse.profile.UserItem
 import com.example.quizappcourse.quiz.QuestionItem
 import com.example.quizappcourse.quiz.QuizActivity
@@ -44,7 +47,7 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
             override fun getItem(position: Int) = when(position) {
                 FEED_ID -> NewsListFragment() //News List Fragment
                 CHOOSER_ID -> QuizChooserFragment() //Quiz chooser fragment
-                PROFILE_ID -> Fragment() // profile fragment
+                PROFILE_ID -> ProfileFragment.newInstance(UserItem("user_test", "https://www.xdxdxd.pl", "asdf")) // profile fragment
                 else -> {
                         Log.wtf("Fragment out of bonds", "How come?")
                         Fragment()
@@ -106,6 +109,7 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
 
         const val USER_URL = "USER_URL"
         const val USER_NAME = "USER_NAME"
+        const val USER_ITEM = "USER_ITEM"
     }
 
     private fun getChooserListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ CHOOSER_ID) as QuizChooserFragment)
@@ -162,7 +166,11 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
 
     // Funkcje z interface z NewsListFragmentu
     override fun onUserSelected(user: UserItem, image: View) {
-        //todo przejsc do other user activity
+        val intent = Intent(this, OtherProfileActivity::class.java)
+        intent.putExtra(USER_ITEM, user)
+        val optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this, image, "circleProfileImageTransition")
+        startActivity(intent, optionsCompat.toBundle())
+
     }
 
     override fun onLikeSelected(feedId: String, diff: Int) {

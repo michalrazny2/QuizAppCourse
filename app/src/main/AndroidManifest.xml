@@ -24,6 +24,9 @@
         <activity android:name=".summary.QuizSummaryActivity"
             android:screenOrientation="portrait"
             android:theme="@style/customDialogTheme"/>
+        <activity android:name=".profile.OtherProfileActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
 
         <!-- TODO: adding all activities on way  -->
     </application>
