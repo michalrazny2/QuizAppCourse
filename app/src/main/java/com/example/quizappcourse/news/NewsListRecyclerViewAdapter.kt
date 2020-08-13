@@ -24,13 +24,13 @@ class NewsListRecyclerViewAdapter(private val mNewsMap: HashMap<String, NewsItem
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val sortedList = mNewsMap.toList().sortedWith(Comparator({o1, o2 -> if(o1.second.timeMilis < o2.second.timeMilis) 1 else -1}))
+        val sortedList = mNewsMap.toList().sortedWith(Comparator({o1, o2 -> if(o1.second.timeMillis < o2.second.timeMillis) 1 else -1}))
         val second = sortedList[position].second
 
         holder.mItem = second
         
         holder.name.text = second.user
-        holder.time.text = getElapsedTimeMinutesFromString(second.timeMilis)
+        holder.time.text = getElapsedTimeMinutesFromString(second.timeMillis)
         holder.quizTitle.text = second.quiz
         holder.comment.text = second.comment
         holder.comment.visibility = View.VISIBLE

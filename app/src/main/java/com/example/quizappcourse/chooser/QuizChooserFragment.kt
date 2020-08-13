@@ -49,9 +49,7 @@ class QuizChooserFragment : Fragment() {
         // downloading quizzes
         loader_quiz.visibility = View.VISIBLE
         quizzesRef.addValueEventListener(object: ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
 
             override fun onDataChange(p0: DataSnapshot) {
                 //pobranie quizow z firebasowej bazy danych
@@ -67,16 +65,13 @@ class QuizChooserFragment : Fragment() {
     }
 
     private fun setUpRecyclerView(){
-        //todo doimplementowac
-        quest_item_list.layoutManager = GridLayoutManager(context, COLUMN_COUNT) //TODO: poprawic , blad wynika z tego ze korzystam z innych wersji
+        quest_item_list.layoutManager = GridLayoutManager(context, COLUMN_COUNT)
         quest_item_list.adapter = QuizChooserRecyclerViewAdapter(quizzesMap, onStartQuizListener)
-
     }
 
     interface OnStartQuizListener{
         fun onStartQuizSelected(quiz: QuizItem, string:String)
     }
-
 
     companion object{
         private const val COLUMN_COUNT = 3

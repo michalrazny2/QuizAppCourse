@@ -103,7 +103,7 @@ class QuizSummaryActivity : BaseActivity() {
                 comment = edit_comment.text.toString()
                 points = pointed
                 quiz = quiz_name
-                timeMilis = System.currentTimeMillis()
+                timeMillis = System.currentTimeMillis()
             })
         }
         setResult(Activity.RESULT_OK, intent)

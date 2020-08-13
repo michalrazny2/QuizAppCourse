@@ -45,21 +45,41 @@ class QuizActivity : BaseActivity(){
     private val quizTitle by lazy{
         intent.extras!!.get(TITLE) as String
     }
+
     private val quiz by lazy{
         // quiz jest inicjalizowany leniwie- co oznacza ze ten blok kodu wykonuje sie
         // przy pierwszym wywolaniu val quiz
         intent.extras!!.get(QUIZ) as QuizItem
-
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.quiz_activity)
 
         quizLogo.setImageResource(quiz.lang.image)
         levelImageView.setImageResource(quiz.level.image)
 
         nextQuestion()
+    }
+
+    // appka na pauzie (po wyjsciu z appki bez wylaczania <?>)
+    override fun onPause() {
+        super.onPause()
+        countDown.cancel()
+        prepareNext.cancel()
+    }
+
+    //po wznowieniu appki ustawiamy timery od nowa zeby appka sie nie wywalala
+    override fun onResume(){
+        super.onResume()
+        if (!countDownRemain.equals(COUNTDOWNREMAIN)){
+            countDown = getCountDownTimer()
+            countDown.start()
+        }
+        if (!prepareNextRemain.equals(PREPARENEXTREMAIN)){
+            prepareNext = getPrepareNextTimer()
+            prepareNext.start()
+        }
     }
 
     private fun nextQuestion() {
@@ -69,9 +89,7 @@ class QuizActivity : BaseActivity(){
             progress.setCurrentStateNumber(StateProgressBar.StateNumber.values()[currentNumber])
             questionText.niceSetText(currentQuestionItem.ask)
             setUpButtons()
-            // todo: uruchomienie odliczania
             countDown.start() //start timera
-
         }
         else{
             returnResultFromQuiz() //jesli koniec pytan to zwrocenie wyniku
@@ -82,6 +100,7 @@ class QuizActivity : BaseActivity(){
         ans_a.setOnClickListener{onChoiceListener(false)}
         ans_b.setOnClickListener{onChoiceListener(false)}
         ans_c.setOnClickListener{onChoiceListener(false)}
+
         when(currentPositive){
             1->{
                 ans_a.niceSetText(currentQuestionItem.positive)
@@ -119,7 +138,6 @@ class QuizActivity : BaseActivity(){
               3-> ans_c.bootstrapBrand = DefaultBootstrapBrand.SUCCESS
             }
             setButtonClickable(false) //po wybraniu odpowiedzi niepozwalamy juz na klikanie
-
             resetNextTimer()
             prepareNext.start()
         }
@@ -137,6 +155,7 @@ class QuizActivity : BaseActivity(){
         ans_c.bootstrapBrand = brand
     }
 
+    // added own funtion for setting nice Text in TextView
     private fun TextView.niceSetText(string:String){
         if(currentNumber>0){
             val anim = AlphaAnimation(1.0f,0.0f)
@@ -147,7 +166,6 @@ class QuizActivity : BaseActivity(){
                 override fun onAnimationRepeat(p0: Animation?) {
                     this@niceSetText.text = string
                 }
-
                 override fun onAnimationEnd(p0: Animation?) {}
                 override fun onAnimationStart(p0: Animation?) {}
             })
@@ -209,28 +227,8 @@ class QuizActivity : BaseActivity(){
         countDown = getCountDownTimer()
     }
 
-    // appka na pauzie (po wyjsciu z appki bez wylaczania <?>)
-    override fun onPause() {
-        super.onPause()
-        countDown.cancel()
-        prepareNext.cancel()
-    }
-
-    //po wznowieniu appki ustawiamy timery od nowa zeby appka sie nie wywalala
-    override fun onResume(){
-        super.onResume()
-        if (!countDownRemain.equals(COUNTDOWNREMAIN)){
-            countDown = getCountDownTimer()
-            countDown.start()
-        }
-        if (!prepareNextRemain.equals(PREPARENEXTREMAIN)){
-            prepareNext = getPrepareNextTimer()
-            prepareNext.start()
-        }
-    }
-
     private fun returnResultFromQuiz() {
-        val intent = Intent().apply(){
+        val intent = Intent().apply{
             putExtra(QUIZ_NAME, quizTitle)
             putExtra(SUCCESS_SUMMARY, "Poprawne ${succesArray.count({it})}/5")
             putExtra(POINTS, succesArray.count({it}) * (quiz.level.ordinal+1) *39)

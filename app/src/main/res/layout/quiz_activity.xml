@@ -9,7 +9,7 @@
     android:paddingLeft="8dp"
     android:paddingRight="8dp"
     android:paddingTop="8dp"
-    tools:context="pl.wrzosdev.quiz.quiz.QuizActivity">
+    tools:context="com.example.quizappcourse.quiz.QuizActivity">
 
     <com.kofigyan.stateprogressbar.StateProgressBar
         android:id="@+id/progress"

@@ -63,52 +63,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private var mNewsMap: HashMap<String, NewsItem> = hashMapOf(
-        //todo: do usuniecia po dodaniu polaczenia z internetem
-        Pair("Asff", NewsItem(comment="komentarzyk wow",
-            points= 10,
-            quiz="Kotlin łatwy",
-            image= "https://www.costam.pl",
-            user = "Ziomka ziomekdsaddad",
-            timeMilis = System.currentTimeMillis()-1000,
-            uid = "asdsad",
-            respects = hashMapOf())),
-
-        Pair("Akjhkff", NewsItem(comment="komentarz",
-            points= 10,
-            quiz="Kotlin łatwy",
-            user = "Ziomka ziomek",
-            timeMilis = System.currentTimeMillis()-1000,
-            uid = "asdsad",
-            respects = hashMapOf())),
-
-        Pair("Asdaddasf", NewsItem(comment="komentarz",
-            points= 10,
-            quiz="Kotlin łatwy",
-            image= "https://www.costam.pl",
-            user = "Ziomka ziomek",
-            timeMilis = System.currentTimeMillis()-1000,
-            uid = "asdsad",
-            respects = hashMapOf())),
-
-        Pair("Asfbnvbbvnf", NewsItem(comment="komentarzyk wow",
-            points= 10,
-            quiz="Kotlin łatwy",
-            image= "https://www.costam.pl",
-            user = "Ziomka ziomekdsaddad",
-            timeMilis = System.currentTimeMillis()-1000,
-            uid = "asdsad",
-            respects = hashMapOf())),
-
-        Pair("Asnbvnff", NewsItem(comment="komentarzyk wow",
-            points= 10,
-            quiz="Kotlin łatwy",
-            image= "https://www.costam.pl",
-            user = "Ziomka ziomekdsaddad",
-            timeMilis = System.currentTimeMillis()-1000,
-            uid = "asdsad",
-            respects = hashMapOf()))
-        )
+    private var mNewsMap: HashMap<String, NewsItem> = hashMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,

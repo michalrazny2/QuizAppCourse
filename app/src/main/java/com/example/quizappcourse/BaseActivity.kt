@@ -34,16 +34,6 @@ abstract class BaseActivity : AppCompatActivity() {
         QApp.fAuth.removeAuthStateListener { baseAuthStateListener }
     }
 
-    fun logIn(){
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-
-        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-        startActivityForResult(mGoogleSignInClient.signInIntent, RC_SIGN_IN)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK){
@@ -53,7 +43,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 val credential = GoogleAuthProvider.getCredential(account?.idToken, null)
                 QApp.fAuth.signInWithCredential(credential)
                     .addOnCompleteListener(this, {
-                        task ->
+                            task ->
                         if(task.isSuccessful){
                             onLogInSuccess()
                         }else{
@@ -64,6 +54,16 @@ abstract class BaseActivity : AppCompatActivity() {
                 Log.w("BASE_ACTIVITY", "Google sign in failed")
             }
         }
+    }
+
+    fun logIn(){
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        startActivityForResult(mGoogleSignInClient.signInIntent, RC_SIGN_IN)
     }
 
     open fun onLogInSuccess() {

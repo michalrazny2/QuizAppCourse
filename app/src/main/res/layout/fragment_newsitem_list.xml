@@ -15,7 +15,7 @@
         android:background="@drawable/bg_pattern_repeated"
         android:layoutAnimation="@anim/layout_animation"
         app:layoutManager="LinearLayoutManager"
-        tools:context="pl.wrzosdev.quiz.news.NewsListFragment"
+        tools:context=".NewsListFragment"
         tools:listitem="@layout/fragment_newsitem" />
 
     <ProgressBar

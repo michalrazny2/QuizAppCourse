@@ -33,7 +33,7 @@
             android:paddingRight="10dp"
             android:paddingTop="8dp"
             app:layoutManager="LinearLayoutManager"
-            tools:context="pl.wrzosdev.quiz.chooser.QuizChooserFragment"
+            tools:context="QuizChooserFragment"
             tools:listitem="@layout/fragment_quizitem" />
     </LinearLayout>
 

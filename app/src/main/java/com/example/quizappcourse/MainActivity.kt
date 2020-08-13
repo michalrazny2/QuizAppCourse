@@ -39,6 +39,7 @@ class MainActivity : BaseActivity(),
     QuizChooserFragment.OnStartQuizListener,
     NewsListFragment.OnNewsIteractionListener,
     ProfileFragment.OnLogChangeListener{
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -46,6 +47,20 @@ class MainActivity : BaseActivity(),
         setViewPager()
     }
 
+    // obsluga wynikow z okien:
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK){
+            when{
+                (requestCode == QUIZ_ACT_REQ_CODE)->{
+                    navigateToSummaryActivity(data)
+                }
+                (requestCode == QUIZ_SUMMARY_CODE)->{
+                    pushNewNews(data)
+                }
+            }
+        }
+    }
 
     private fun setViewPager()  {
         viewpager.adapter = getFragmentPagerAdapter()
@@ -89,7 +104,6 @@ class MainActivity : BaseActivity(),
         }
     }
 
-
     private fun getOnPageChangeListener()=
         object: ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(state: Int) {}
@@ -108,59 +122,30 @@ class MainActivity : BaseActivity(),
 
         }
 
-    companion object{
-        const val FEED_ID = 0
-        const val CHOOSER_ID = 1
-        const val  PROFILE_ID = 2
-
-        const val QUIZ_SET = "quiz_set"
-        const val QUIZ = "quiz"
-        const val TITLE = "title"
-        const val QUIZ_ACT_REQ_CODE = 100
-        const val QUIZ_SUMMARY_CODE = 101
-
-        const val USER_URL = "USER_URL"
-        const val USER_NAME = "USER_NAME"
-        const val USER_ITEM = "USER_ITEM"
-    }
-
-
     override fun onStartQuizSelected(quiz: QuizItem, name: String) {
         Log.i("MAIN ACTIVITY", "Main activity on start quiz selected ")
         getChooserListFragment().loader_quiz.visibility = View.VISIBLE
 
-        QApp.fData.getReference("questions/${quiz.questSet}")
+        QApp.fData.getReference("questions/${quiz.questset}")
             .addListenerForSingleValueEvent(object: ValueEventListener{
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-
+                override fun onCancelled(error: DatabaseError) {}
                 override fun onDataChange(p0: DataSnapshot) {
                     val quizset = ArrayList<QuestionItem>()
-                    // tego mapa srednio rozumiem
+                    // elementy z p0.children (czyli z firebase database) mapuje do quizset (arrayLista powyżej)- w ten sposob sciagam dane z serwera
                     p0.children.map{it.getValue(QuestionItem::class.java)}.mapTo(quizset){it!!}
                     getChooserListFragment().loader_quiz.visibility = View.GONE
                     navigateQuiz(quizset, name, quiz)
                 }
-
             })
-
-
     }
 
-    // obsluga wynikow z okien:
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
-            when{
-                (requestCode == QUIZ_ACT_REQ_CODE)->{
-                    navigateToSummaryActivity(data)
-                }
-                (requestCode == QUIZ_SUMMARY_CODE)->{
-                    pushNewNews(data)
-                }
-            }
+    private fun navigateQuiz(quizSet: ArrayList<QuestionItem>, title:String, quiz: QuizItem) {
+        val intent = Intent(this, QuizActivity::class.java).apply{
+            putExtra(QUIZ_SET, quizSet)
+            putExtra(TITLE, title)
+            putExtra(QUIZ, quiz)
         }
+        startActivityForResult(intent, QUIZ_ACT_REQ_CODE)
     }
 
     private fun pushNewNews(data: Intent?) {
@@ -186,14 +171,7 @@ class MainActivity : BaseActivity(),
         startActivityForResult(intent, QUIZ_SUMMARY_CODE)
     }
 
-    private fun navigateQuiz(quizSet: ArrayList<QuestionItem>, title:String, quiz: QuizItem) {
-        val intent = Intent(this, QuizActivity::class.java).apply{
-            putExtra(QUIZ_SET, quizSet)
-            putExtra(TITLE, title)
-            putExtra(QUIZ, quiz)
-        }
-        startActivityForResult(intent, QUIZ_ACT_REQ_CODE)
-    }
+
 
     // Funkcje z interface z NewsListFragmentu
     override fun onUserSelected(user: UserItem, image: View) {
@@ -229,5 +207,19 @@ class MainActivity : BaseActivity(),
     private fun getNewsListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ FEED_ID) as NewsListFragment)
     private fun getChooserListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ CHOOSER_ID) as QuizChooserFragment)
 
+    companion object{
+        const val FEED_ID = 0
+        const val CHOOSER_ID = 1
+        const val  PROFILE_ID = 2
 
+        const val QUIZ_SET = "quiz_set"
+        const val QUIZ = "quiz"
+        const val TITLE = "title"
+        const val QUIZ_ACT_REQ_CODE = 100
+        const val QUIZ_SUMMARY_CODE = 101
+
+        const val USER_URL = "USER_URL"
+        const val USER_NAME = "USER_NAME"
+        const val USER_ITEM = "USER_ITEM"
+    }
 }
