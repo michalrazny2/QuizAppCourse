@@ -8,6 +8,7 @@ import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.quizappcourse.BaseActivity
 import com.example.quizappcourse.MainActivity.Companion.USER_NAME
 import com.example.quizappcourse.MainActivity.Companion.USER_URL
 import com.example.quizappcourse.QApp
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_quizitem_list.*
 import kotlinx.android.synthetic.main.result_activity.*
 
 // Klasa obslugujaca podsumowanie quizu bo zakonczeniu go przez uzytkownika
-class QuizSummaryActivity : AppCompatActivity() {
+class QuizSummaryActivity : BaseActivity() {
 
     // intent extras
     private val quiz_name by lazy{intent.extras?.get(QUIZ_NAME) as String}
@@ -109,9 +110,13 @@ class QuizSummaryActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun logIn() {
-        //todo: bazowa aktywnosc logowania
+    override fun onLogInSuccess() {
         goToPublish()
+    }
+
+    override fun onLogInFailure(exception: Exception?){
+        setResult(Activity.RESULT_CANCELED)
+        finish()
     }
 
     private fun setUpCloseButton() {

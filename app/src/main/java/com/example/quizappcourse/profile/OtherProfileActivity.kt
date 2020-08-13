@@ -2,15 +2,20 @@ package com.example.quizappcourse.profile
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.example.quizappcourse.BaseActivity
 import com.example.quizappcourse.MainActivity
+import com.example.quizappcourse.QApp
 import com.example.quizappcourse.R
 import com.example.quizappcourse.news.NewsListFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.other_profile_activity.view.*
 
-class OtherProfileActivity : AppCompatActivity(), NewsListFragment.OnNewsIteractionListener{
+class OtherProfileActivity : BaseActivity(), NewsListFragment.OnNewsIteractionListener{
 
 
 
@@ -38,7 +43,16 @@ class OtherProfileActivity : AppCompatActivity(), NewsListFragment.OnNewsIteract
     }
 
     override fun onLikeSelected(feedId: String, diff: Int) {
-        TODO("Not yet implemented") // like feed
+        // dawanie lajka
+        if(QApp.fUser != null){
+            QApp.fData.getReference("feeds/$feedId/respects").updateChildren(mapOf(Pair(QApp.fUser?.uid, diff)))
+                .addOnCompleteListener { object: OnCompleteListener<Void> {
+                    override fun onComplete(p0: Task<Void>) {
+                        Log.d("MainActivity", "Just liked $feedId with $diff")
+                    }
+
+                } }
+        }
     }
 
 

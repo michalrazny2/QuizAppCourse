@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand
+import com.example.quizappcourse.BaseActivity
 import com.example.quizappcourse.MainActivity.Companion.QUIZ
 import com.example.quizappcourse.MainActivity.Companion.QUIZ_SET
 import com.example.quizappcourse.MainActivity.Companion.TITLE
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.quiz_activity.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class QuizActivity : AppCompatActivity(){
+class QuizActivity : BaseActivity(){
     //TODO: do poprawy ten blad ktory powoduje ze wyswietlaja sie jakies losowe napisy w okolicach quizchooserfragmentu/quizitemu
 
     // nowa aktywnosc- bo otwieramy nowe okno

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityOptionsCompat
@@ -12,6 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.quizappcourse.chooser.QuizChooserFragment
 import com.example.quizappcourse.chooser.QuizItem
+import com.example.quizappcourse.news.NewsItem
 import com.example.quizappcourse.news.NewsListFragment
 import com.example.quizappcourse.profile.OtherProfileActivity
 import com.example.quizappcourse.profile.ProfileFragment
@@ -19,14 +21,24 @@ import com.example.quizappcourse.profile.UserItem
 import com.example.quizappcourse.quiz.QuestionItem
 import com.example.quizappcourse.quiz.QuizActivity
 import com.example.quizappcourse.summary.QuizSummaryActivity
+import com.example.quizappcourse.summary.QuizSummaryActivity.Companion.NEW_FEED
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_newsitem_list.*
 import kotlinx.android.synthetic.main.fragment_quizitem_list.*
 
 /* Main activity of application
 * */
 
-class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListener, NewsListFragment.OnNewsIteractionListener {
+class MainActivity : BaseActivity(),
+    QuizChooserFragment.OnStartQuizListener,
+    NewsListFragment.OnNewsIteractionListener,
+    ProfileFragment.OnLogChangeListener{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,7 +59,7 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
             override fun getItem(position: Int) = when(position) {
                 FEED_ID -> NewsListFragment() //News List Fragment
                 CHOOSER_ID -> QuizChooserFragment() //Quiz chooser fragment
-                PROFILE_ID -> ProfileFragment.newInstance(UserItem("user_test", "https://www.xdxdxd.pl", "asdf")) // profile fragment
+                PROFILE_ID -> ProfileFragment() // profile fragment
                 else -> {
                         Log.wtf("Fragment out of bonds", "How come?")
                         Fragment()
@@ -112,20 +124,28 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
         const val USER_ITEM = "USER_ITEM"
     }
 
-    private fun getChooserListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ CHOOSER_ID) as QuizChooserFragment)
 
     override fun onStartQuizSelected(quiz: QuizItem, name: String) {
         Log.i("MAIN ACTIVITY", "Main activity on start quiz selected ")
         getChooserListFragment().loader_quiz.visibility = View.VISIBLE
-        //todo: komunikacja
-        var quizset = ArrayList<QuestionItem>().apply{
-            add(QuestionItem())
-            add(QuestionItem())
-            add(QuestionItem())
-            add(QuestionItem())
-            add(QuestionItem())
-        }
-        navigateQuiz(quizset, name, quiz)
+
+        QApp.fData.getReference("questions/${quiz.questSet}")
+            .addListenerForSingleValueEvent(object: ValueEventListener{
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDataChange(p0: DataSnapshot) {
+                    val quizset = ArrayList<QuestionItem>()
+                    // tego mapa srednio rozumiem
+                    p0.children.map{it.getValue(QuestionItem::class.java)}.mapTo(quizset){it!!}
+                    getChooserListFragment().loader_quiz.visibility = View.GONE
+                    navigateQuiz(quizset, name, quiz)
+                }
+
+            })
+
+
     }
 
     // obsluga wynikow z okien:
@@ -137,18 +157,29 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
                     navigateToSummaryActivity(data)
                 }
                 (requestCode == QUIZ_SUMMARY_CODE)->{
-                    //todo wyslanie danych na serwer
+                    pushNewNews(data)
                 }
             }
         }
     }
 
+    private fun pushNewNews(data: Intent?) {
+        val feedItem = data!!.extras?.get(NEW_FEED) as NewsItem //spojne z wezlami z firebase'a
+        QApp.fData.getReference("feeds").push().setValue(feedItem.apply{
+            uid = QApp.fUser!!.uid
+            image = QApp.fUser!!.photoUrl.toString()
+            user = QApp.fUser!!.displayName!!
+        })
+        viewpager.currentItem = 0
+        getNewsListFragment().feed_item_list.smoothScrollToPosition(0)
+    }
+
     private fun navigateToSummaryActivity(data: Intent?) {
         var intent = Intent(this, QuizSummaryActivity::class.java).apply{
             if(QApp.fUser != null){
-                // todo: zasilenie uzytkownikiem
-                data?.putExtra(USER_NAME, "Uzytkownik")
-                data?.putExtra(USER_URL, "htpps://wwww.costam.pl")
+                // pobranie uzytkownika
+                data?.putExtra(USER_NAME, QApp.fUser?.displayName ?: QApp.res.getString(R.string.anonym_name))
+                data?.putExtra(USER_URL, QApp.fUser?.photoUrl.toString())
             }
             data?.extras?.let { putExtras(it) }
         }
@@ -174,6 +205,29 @@ class MainActivity : AppCompatActivity(), QuizChooserFragment.OnStartQuizListene
     }
 
     override fun onLikeSelected(feedId: String, diff: Int) {
-        //todo feed
+        // dawanie lajka
+        if(QApp.fUser != null){
+            QApp.fData.getReference("feeds/$feedId/respects").updateChildren(mapOf(Pair(QApp.fUser?.uid, diff)))
+                .addOnCompleteListener { object: OnCompleteListener<Void>{
+                    override fun onComplete(p0: Task<Void>) {
+                        Log.d("MainActivity", "Just liked $feedId with $diff")
+                    }
+
+                } }
+        }
     }
+
+    override fun onLogIn() {
+        logIn()  //oddelegowanie do BaseActivity
+    }
+
+    override fun onLogOut() {
+        QApp.fAuth.signOut()
+        getNewsListFragment().feed_item_list.adapter?.notifyDataSetChanged()
+    }
+
+    private fun getNewsListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ FEED_ID) as NewsListFragment)
+    private fun getChooserListFragment() = (supportFragmentManager.findFragmentByTag("android:switcher:"+R.id.viewpager+":"+ CHOOSER_ID) as QuizChooserFragment)
+
+
 }

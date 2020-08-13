@@ -9,11 +9,15 @@ import android.widget.GridLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.quizappcourse.R
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_quizitem_list.*
 
 class QuizChooserFragment : Fragment() {
 
-    // todo: komunikacja do zrobienia
+    private var quizzesRef = FirebaseDatabase.getInstance().getReference("quizzes")
 
     private lateinit var onStartQuizListener: OnStartQuizListener
     private val quizzesMap: HashMap<String,QuizItem> = HashMap()
@@ -42,10 +46,24 @@ class QuizChooserFragment : Fragment() {
     }
 
     private fun setCommunication() {
-        quizzesMap.apply{
-            put("1", QuizItem(lang=LangEnum.JAVA))
-            put("12", QuizItem(level=LevelEnum.AVARAGE))
-        }
+        // downloading quizzes
+        loader_quiz.visibility = View.VISIBLE
+        quizzesRef.addValueEventListener(object: ValueEventListener{
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                //pobranie quizow z firebasowej bazy danych
+                loader_quiz.visibility = View.GONE
+                for(message in p0.children){
+                    val quizItem = message.getValue(QuizItem::class.java)!!
+                    quizzesMap.put(message.key!!, quizItem)
+                }
+                quest_item_list.adapter?.notifyDataSetChanged()
+            }
+
+        })
     }
 
     private fun setUpRecyclerView(){
